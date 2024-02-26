@@ -360,6 +360,8 @@ export type Draft = Node & {
   /** OG meta-data of the draft. Contains image url used in open graph meta tags. */
   ogMetaData?: Maybe<OpenGraphMetaData>;
   readTimeInMinutes: Scalars['Int']['output'];
+  /** The date the draft is scheduled to be published. */
+  scheduledDate?: Maybe<Scalars['DateTime']['output']>;
   /** SEO information of the draft. Contains title and description used in meta tags. */
   seo?: Maybe<Seo>;
   /** Information of the series the draft belongs to. */
@@ -560,9 +562,9 @@ export enum FeedType {
 }
 
 export enum HttpRedirectionType {
-  /** A permanent redirect that corresponds to the 308 HTTP status code. */
+  /** A permanent redirect that corresponds to the 302 HTTP status code. */
   Permanent = 'PERMANENT',
-  /** A temporary redirect that corresponds to the 307 HTTP status code. */
+  /** A temporary redirect that corresponds to the 301 HTTP status code. */
   Temporary = 'TEMPORARY'
 }
 
@@ -1188,6 +1190,8 @@ export type Post = Node & {
   series?: Maybe<Series>;
   /** The slug of the post. Used as address of the post on blog. Example - https://johndoe.com/my-post-slug */
   slug: Scalars['String']['output'];
+  /** Boolean flag to identify whether or not the post is sourced from GitHub. */
+  sourcedFromGithub: Scalars['Boolean']['output'];
   /** The subtitle of the post. Subtitle is a short description of the post which is also used in SEO if meta tags are not provided. */
   subtitle?: Maybe<Scalars['String']['output']>;
   /** Returns list of tags added to the post. Contains tag id, name, slug, etc. */
@@ -1431,6 +1435,8 @@ export type Publication = Node & {
   __typename?: 'Publication';
   /** The about section of the publication. */
   about?: Maybe<Content>;
+  /** Boolean flag indicating if the publication allows edits by contributors */
+  allowContributorEdits: Scalars['Boolean']['output'];
   /** The author who owns the publication. */
   author: User;
   /** The canonical URL of the publication. */
@@ -1672,6 +1678,8 @@ export type PublicationIntegrations = {
   matomoURL?: Maybe<Scalars['String']['output']>;
   /** A flag indicating if the custom domain is enabled for integration with Plausible Analytics. */
   plausibleAnalyticsEnabled?: Maybe<Scalars['Boolean']['output']>;
+  /** The share ID for the Hashnode-provided Umami analytics instance. */
+  umamiShareId?: Maybe<Scalars['String']['output']>;
   /** The ID for the Hashnode-provided Umami analytics instance. */
   umamiWebsiteUUID?: Maybe<Scalars['String']['output']>;
   /** Web Monetization Payment Pointer for integration with Web Monetization. */
@@ -1723,7 +1731,10 @@ export type PublicationNavbarItem = {
   label?: Maybe<Scalars['String']['output']>;
   /** The static page added to the navbar item. */
   page?: Maybe<StaticPage>;
-  /** The order of the navbar item. */
+  /**
+   * The order of the navbar item.
+   * @deprecated Navbar items are already returned in the correct order. Priority value is not needed and might be 0 in most cases.
+   */
   priority?: Maybe<Scalars['Int']['output']>;
   /** The series added to the navbar item. */
   series?: Maybe<Series>;
@@ -1851,8 +1862,11 @@ export type PublishPostInput = {
   slug?: InputMaybe<Scalars['String']['input']>;
   /** The subtitle of the post. */
   subtitle?: InputMaybe<Scalars['String']['input']>;
-  /** A list of tags added to the post. */
-  tags: Array<PublishPostTagInput>;
+  /**
+   * A list of tags to add to the post. You can get a list of popular tags available on Hashnode here.
+   * https://github.com/Hashnode/support/blob/main/misc/tags.json
+   */
+  tags?: InputMaybe<Array<PublishPostTagInput>>;
   /** The title of the post. */
   title: Scalars['String']['input'];
 };
@@ -2017,10 +2031,11 @@ export type RecommendedPublicationEdge = Edge & {
   node: Publication;
 };
 
-export type RedirectionRule = {
+export type RedirectionRule = Node & {
   __typename?: 'RedirectionRule';
   /** The destination URL of the redirection rule. */
   destination: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
   /** The source URL of the redirection rule. */
   source: Scalars['String']['output'];
   /** The type of the redirection rule. */
@@ -2195,7 +2210,8 @@ export enum Scope {
   WriteDraft = 'write_draft',
   WritePost = 'write_post',
   WriteSeries = 'write_series',
-  WriteStaticPage = 'write_static_page'
+  WriteStaticPage = 'write_static_page',
+  WriteWidget = 'write_widget'
 }
 
 /**
