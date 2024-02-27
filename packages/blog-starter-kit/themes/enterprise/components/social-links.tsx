@@ -37,9 +37,9 @@ export const SocialLinks = ({ isSidebar }: { isSidebar?: boolean }) => {
 								<LinkedinSVG className="h-5 w-5 stroke-current" />
 							</a>
 						)}
-						{publication.links?.instagram && (
+						{publication.links?.Instagram && (
 							<a
-								href={publication.links.instagram}
+								href={publication.links.Instagram}
 								target="_blank"
 								rel="noopener noreferrer"
 								aria-label="Find us on instagram, external website, opens in new tab"
